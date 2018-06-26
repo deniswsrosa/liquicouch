@@ -97,11 +97,11 @@ public class DatabaseChangelog {
   //...
 }
 ```
-ChangeLogs are sorted alphabetically by `order` argument and changesets are applied due to this order.
+ChangeLogs are sorted *alphabetically* (that is why it is a good practice to start the order with zeros) by `order` argument and changesets are applied due to this order.
 
 ### @ChangeSet
 
-Method annotated by @ChangeSet is taken and applied to the database. History of applied change sets is stored in a collection called `dbchangelog` (by default) in your MongoDB
+Method annotated by @ChangeSet is taken and applied to the database. History of applied change sets is stored in a document with type `dbchangelog`
 
 #### Annotation parameters:
 
