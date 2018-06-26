@@ -12,9 +12,9 @@ The goal is to keep this tool simple and comfortable to use.
 
 **LiquiCouch** provides new approach for adding changes (change sets) based on Java classes and methods with appropriate annotations.
 
-## Getting started
+# Getting started
 
-### Add a dependency
+## Add a dependency
 
 With Maven
 ```xml
@@ -30,7 +30,7 @@ compile 'org.javassist:javassist:3.18.2-GA' // workaround for ${javassist.versio
 compile 'com.github.liquicouch:liquicouch:0.13'
 ```
 
-### Usage with Spring
+## Usage with Spring
 
 You need to instantiate Liquicouch object and provide some configuration.
 If you use Spring can be instantiated as a singleton bean in the Spring context. 
@@ -40,9 +40,10 @@ In this case the migration process will be executed automatically on startup.
 
 @Autowired
 private Environment environment;
+
 @Bean
 public LiquiCouch liquicouch(){
-  LiquiCouch runner = new LiquiCouch(environment); //you can leverage spring-boot configuration here
+  LiquiCouch runner = new LiquiCouch(environment); //It will grab all the data needed from the application.properties file
   runner.setChangeLogsScanPackage(
        "com.example.yourapp.changelogs"); // the package to be scanned for changesets
   
@@ -51,7 +52,7 @@ public LiquiCouch liquicouch(){
 ```
 
 
-### Usage without Spring
+## Usage without Spring
 Using LiquiCouch without a spring context has similar configuration but you have to remember to run `execute()` method to start a migration process.
 
 ```java
@@ -69,7 +70,7 @@ runner.setEnabled(shouldBeEnabled);              // default is true, migration w
 ```
 
 
-### Creating change logs
+## Creating change logs
 
 `ChangeLog` contains bunch of `ChangeSet`s. `ChangeSet` is a single task (set of instructions made on a database). In other words `ChangeLog` is a class annotated with `@ChangeLog` and containing methods annotated with `@ChangeSet`.
 
@@ -84,17 +85,9 @@ public class DatabaseChangelog {
      // task implementation
   }
 
-
-  //you can also receive the Bucket as an argument
-  @ChangeSet(order = "1", id = "someChangeId", author = "testAuthor")
-  public void importantWorkToDo(Bucket bucket){
-     // task implementation
-  }
-
-
 }
 ```
-#### @ChangeLog
+### @ChangeLog
 
 Class with change sets must be annotated by `@ChangeLog`. There can be more than one change log class but in that case `order` argument should be provided:
 
@@ -106,11 +99,11 @@ public class DatabaseChangelog {
 ```
 ChangeLogs are sorted alphabetically by `order` argument and changesets are applied due to this order.
 
-#### @ChangeSet
+### @ChangeSet
 
 Method annotated by @ChangeSet is taken and applied to the database. History of applied change sets is stored in a collection called `dbchangelog` (by default) in your MongoDB
 
-##### Annotation parameters:
+#### Annotation parameters:
 
 `order` - string for sorting change sets in one changelog. Sorting in alphabetical order, ascending. It can be a number, a date etc.
 
@@ -120,7 +113,7 @@ Method annotated by @ChangeSet is taken and applied to the database. History of 
 
 `runAlways` - _[optional, default: false]_ changeset will always be executed but only first execution event will be stored in dbchangelog collection
 
-##### Defining ChangeSet methods
+#### Defining ChangeSet methods
 Method annotated by `@ChangeSet` can have one of the following definition:
 
 ```java
@@ -172,7 +165,7 @@ public void someChange5(MongoTemplate mongoTemplate, Environment environment) {
 }
 ```
 
-### Using Spring profiles
+## Using Spring profiles
      
 **LiquiCouch** accepts Spring's `org.springframework.context.annotation.Profile` annotation. If a change log or change set class is annotated  with `@Profile`, 
 then it is activated for current application profiles.
@@ -197,7 +190,7 @@ public class ChangelogForTestEnv{
 }
 ```
 
-#### Enabling @Profile annotation (option)
+### Enabling @Profile annotation (option)
       
 To enable the `@Profile` integration, please inject `org.springframework.core.env.Environment` to you runner.
 
