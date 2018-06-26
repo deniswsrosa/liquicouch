@@ -1,6 +1,6 @@
 ![LiquiCouch](https://raw.githubusercontent.com/deniswsrosa/liquicouch/master/misc/banner.png)
 
-[![Build Status](https://travis-ci.org/LiquiCouch/LiquiCouch.svg?branch=master)](https://travis-ci.org/LiquiCouch/LiquiCouch) [![Coverity Scan Build Status](https://scan.coverity.com/projects/2721/badge.svg)](https://scan.coverity.com/projects/2721) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.liquicouch/LiquiCouch/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.liquicouch/LiquiCouch) [![Licence](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/LiquiCouch/LiquiCouch/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/LiquiCouch/LiquiCouch.svg?branch=master)](https://travis-ci.org/LiquiCouch/LiquiCouch) [![Coverity Scan Build Status](https://scan.coverity.com/projects/2721/badge.svg)](https://scan.coverity.com/projects/2721) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.liquicouch/LiquiCouch/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.liquicouch/LiquiCouch) [![Licence](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/deniswsrosa/liquicouch/blob/master/LICENSE)
 ---
 
 
@@ -208,40 +208,4 @@ public Liquicouch LiquiCouch(Environment environment) {
   runner.setSpringEnvironment(environment)
   //... etc
 }
-```
-
-## Known issues
-
-##### Mongo java driver conflicts
-
-**LiquiCouch** depends on `mongo-java-driver`. If your application has mongo-java-driver dependency too, there could be a library conflicts in some cases.
-
-**Exception**:
-```
-com.mongodb.WriteConcernException: { "serverUsed" : "localhost" , 
-"err" : "invalid ns to index" , "code" : 10096 , "n" : 0 , 
-"connectionId" : 955 , "ok" : 1.0}
-```
-
-**Workaround**:
-
-You can exclude mongo-java-driver from **LiquiCouch**  and use your dependency only. Maven example (pom.xml) below:
-```xml
-<dependency>
-    <groupId>org.mongodb</groupId>
-    <artifactId>mongo-java-driver</artifactId>
-    <version>3.0.0</version>
-</dependency>
-
-<dependency>
-  <groupId>com.github.liquicouch</groupId>
-  <artifactId>LiquiCouch</artifactId>
-  <version>0.9</version>
-  <exclusions>
-    <exclusion>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongo-java-driver</artifactId>
-    </exclusion>
-  </exclusions>
-</dependency>
 ```
