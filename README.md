@@ -113,9 +113,9 @@ Method annotated by @ChangeSet is taken and applied to the database. History of 
 
 `runAlways` - _[optional, default: false]_ changeset will always be executed but only first execution event will be stored in dbchangelog collection
 
-`recounts` - _[optional, default: 0]_ changeset will always be executed but only first execution event will be stored in dbchangelog collection
+`recounts` - _[optional, default: 0] [Only applied when changSet returns a ParameterizedN1qlQuery]_ if you want to be sure that all documents have been update XXXXXX
 
-`retries` - _[optional, default: 0]_ if the count operation fails (the count result isn't zero) it will rerun the changeSet in an attempt to update the remaining documents ( I you plan to use this method, your changeSet should me able to run multiple times without any side effects). If all retries fail, an exception will the thrown an the application will fail to start.
+`retries` - _[optional, default: 0] [Only applied when changSet returns a ParameterizedN1qlQuery]_ if the recount operation fails (the count result isn't zero) it will rerun the changeSet in an attempt to update the remaining documents ( Your changeSet should me able to run multiple times without any side effects). If all retries fail, an exception will the thrown an the application will fail to start.
 
 #### Defining ChangeSet methods
 Method annotated by `@ChangeSet` can have one of the following definition:
