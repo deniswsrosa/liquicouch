@@ -1,4 +1,4 @@
-![LiquiCouch](https://raw.githubusercontent.com/LiquiCouch/LiquiCouch/master/misc/icon.png)
+![LiquiCouch](https://raw.githubusercontent.com/deniswsrosa/liquicouch/master/misc/icon.png)
 
 [![Build Status](https://travis-ci.org/LiquiCouch/LiquiCouch.svg?branch=master)](https://travis-ci.org/LiquiCouch/LiquiCouch) [![Coverity Scan Build Status](https://scan.coverity.com/projects/2721/badge.svg)](https://scan.coverity.com/projects/2721) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.liquicouch/LiquiCouch/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.liquicouch/LiquiCouch) [![Licence](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/LiquiCouch/LiquiCouch/blob/master/LICENSE)
 ---
