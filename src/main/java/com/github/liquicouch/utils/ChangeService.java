@@ -78,6 +78,7 @@ public class ChangeService {
           annotation.author(),
           new Date(),
           Integer.parseInt(annotation.recounts()),
+          Integer.parseInt(annotation.retries()),
           changesetMethod.getDeclaringClass().getName(),
           changesetMethod.getName());
     } else {

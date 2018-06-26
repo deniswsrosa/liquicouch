@@ -37,10 +37,12 @@ If you use Spring can be instantiated as a singleton bean in the Spring context.
 In this case the migration process will be executed automatically on startup.
 
 ```java
+
+@Autowired
+private Environment environment;
 @Bean
 public LiquiCouch liquicouch(){
-  Liquicouch runner = new Liquicouch("mongodb://YOUR_DB_HOST:27017/DB_NAME");
-  runner.setDbName("yourDbName");         // host must be set if not set in URI
+  LiquiCouch runner = new LiquiCouch(environment); //you can leverage spring-boot configuration here
   runner.setChangeLogsScanPackage(
        "com.example.yourapp.changelogs"); // the package to be scanned for changesets
   
@@ -53,8 +55,7 @@ public LiquiCouch liquicouch(){
 Using LiquiCouch without a spring context has similar configuration but you have to remember to run `execute()` method to start a migration process.
 
 ```java
-Liquicouch runner = new Liquicouch("mongodb://YOUR_DB_HOST:27017/DB_NAME");
-runner.setDbName("yourDbName");         // host must be set if not set in URI
+LiquiCouch runner = new LiquiCouch("couchbase://SOME_IP_ADDRESS", "yourBucketName", "bucketPasword");
 runner.setChangeLogsScanPackage(
      "com.example.yourapp.changelogs"); // package to scan for changesets
 
@@ -64,16 +65,8 @@ runner.execute();         //  ------> starts migration changesets
 Above examples provide minimal configuration. `Liquicouch` object provides some other possibilities (setters) to make the tool more flexible:
 
 ```java
-runner.setChangelogCollectionName(logColName);   // default is dbchangelog, collection with applied change sets
-runner.setLockCollectionName(lockColName);       // default is LiquiCouchlock, collection used during migration process
 runner.setEnabled(shouldBeEnabled);              // default is true, migration won't start if set to false
 ```
-
-MongoDB URI format:
-```
-mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database[.collection]][?options]]
-```
-[More about URI](http://mongodb.github.io/mongo-java-driver/3.5/javadoc/)
 
 
 ### Creating change logs
@@ -86,8 +79,15 @@ package com.example.yourapp.changelogs;
 @ChangeLog
 public class DatabaseChangelog {
   
-  @ChangeSet(order = "001", id = "someChangeId", author = "testAuthor")
-  public void importantWorkToDo(DB db){
+  @ChangeSet(order = "1", id = "someChangeId", author = "testAuthor")
+  public void importantWorkToDo(){
+     // task implementation
+  }
+
+
+  //you can also receive the Bucket as an argument
+  @ChangeSet(order = "1", id = "someChangeId", author = "testAuthor")
+  public void importantWorkToDo(Bucket bucket){
      // task implementation
   }
 

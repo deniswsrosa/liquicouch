@@ -42,6 +42,8 @@ public @interface ChangeSet {
    */
   boolean runAlways() default false;
 
-  String recounts() default "1";
+  String recounts() default "0";
+
+  String retries() default "0";
 
 }

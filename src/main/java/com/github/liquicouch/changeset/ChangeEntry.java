@@ -14,21 +14,26 @@ public class ChangeEntry {
   private static final String KEY_RECOUNTS = "recounts";
   private static final String KEY_CHANGELOGCLASS = "changeLogClass";
   private static final String KEY_CHANGESETMETHOD = "changeSetMethod";
+  private static final String KEY_RETRIES = "retries";
 
   private String _id;
   private String changeId;
   private String author;
   private Date timestamp;
   private Integer recounts;
+  private Integer retries;
   private String changeLogClass;
   private String changeSetMethodName;
   
-  public ChangeEntry(String changeId, String author, Date timestamp, Integer recounts, String changeLogClass, String changeSetMethodName) {
+  public ChangeEntry(String changeId, String author, Date timestamp, Integer recounts, Integer retries,
+                     String changeLogClass, String changeSetMethodName) {
+
     this.changeId = changeId;
     this._id = "ChangeEntry::"+changeId;
     this.author = author;
     this.timestamp = new Date(timestamp.getTime());
     this.recounts = recounts;
+    this.retries = retries;
     this.changeLogClass = changeLogClass;
     this.changeSetMethodName = changeSetMethodName;
   }
@@ -70,7 +75,9 @@ public class ChangeEntry {
     return this.changeSetMethodName;
   }
 
-  public Integer getRecounts(){return this.recounts;}
+  public int getRecounts(){return this.recounts;}
+
+  public int getRetries(){return this.retries;}
 
 
   public static JsonDocument getAsJsonDocument(ChangeEntry changeEntry){
@@ -79,6 +86,7 @@ public class ChangeEntry {
         .put("id", changeEntry._getId())
         .put(ChangeEntry.KEY_CHANGEID, changeEntry.getChangeId())
         .put(ChangeEntry.KEY_AUTHOR, changeEntry.getAuthor())
+        .put(ChangeEntry.KEY_RETRIES, changeEntry.getRetries())
         .put(ChangeEntry.KEY_CHANGELOGCLASS, changeEntry.getChangeLogClass())
         .put(ChangeEntry.KEY_CHANGESETMETHOD, changeEntry.getChangeSetMethodName())
         .put(ChangeEntry.KEY_RECOUNTS, changeEntry.getRecounts())
@@ -98,7 +106,6 @@ public class ChangeEntry {
 
   @Override
   public int hashCode() {
-
     return Objects.hash(_id, changeId);
   }
 }

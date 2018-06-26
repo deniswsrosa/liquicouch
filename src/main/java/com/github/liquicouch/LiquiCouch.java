@@ -4,6 +4,7 @@ import static org.springframework.util.StringUtils.hasText;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import com.couchbase.client.java.Bucket;
@@ -36,8 +37,13 @@ public class LiquiCouch implements InitializingBean {
   private Environment springEnvironment;
 
 
-  public LiquiCouch() {
-   // this(new MongoClientURI("mongodb://" + defaultHost() + ":" + defaultPort() + "/"));
+  public LiquiCouch(Environment environment) {
+    this.springEnvironment = environment;
+    List<String> nodes = Arrays.asList(environment.getProperty("spring.couchbase.bootstrap-hosts").split(","));
+      this.bucket = CouchbaseCluster.create(nodes)
+          .openBucket(environment.getProperty("spring.couchbase.bucket.name"),
+              environment.getProperty("spring.couchbase.bucket.password"));
+      this.dao = new ChangeEntryDAO(bucket);
   }
 
 
@@ -105,14 +111,12 @@ public class LiquiCouch implements InitializingBean {
 
           try {
             if (dao.isNewChange(changeEntry)) {
-              Object object = executeChangeSetMethod(changesetMethod, changelogInstance, bucket);
-              executeCounter(object, changeEntry, bucket);
+              executeMethod(changesetMethod, changelogInstance, changeEntry);
               dao.save(changeEntry);
               logger.info(changeEntry + " applied");
 
             } else if (service.isRunAlwaysChangeSet(changesetMethod)) {
-              Object object = executeChangeSetMethod(changesetMethod, changelogInstance, bucket);
-              executeCounter(object, changeEntry, bucket);
+              executeMethod(changesetMethod, changelogInstance, changeEntry);
               logger.info(changeEntry + " reapplied");
 
             } else {
@@ -132,15 +136,34 @@ public class LiquiCouch implements InitializingBean {
       } catch (InstantiationException e) {
         throw new LiquiCouchException(e.getMessage(), e);
       }
-
     }
   }
 
-  private void executeCounter(Object object, ChangeEntry entry, Bucket bucket) {
-    if(object == null || !(object instanceof ParameterizedN1qlQuery) ) {
-      return;
+  private void executeMethod(Method changesetMethod, Object changelogInstance, ChangeEntry entry) throws LiquiCouchException {
+    for (int i = 0; i < (entry.getRetries()+1); i++) {
+      try {
+        Object object = executeChangeSetMethod(changesetMethod, changelogInstance, bucket);
+
+        if(object == null || !(object instanceof ParameterizedN1qlQuery) ) {
+          return;
+        } else {
+          dao.executeCount((ParameterizedN1qlQuery) object, bucket, entry);
+        }
+
+      } catch(LiquiCouchCounterException e) {
+        //if is the last retry throw the exception
+        if( (entry.getRecounts()+1) == i) {
+          throw e;
+        }
+
+      } catch (IllegalAccessException e) {
+        throw new LiquiCouchException(e.getMessage(), e);
+
+      } catch (InvocationTargetException e) {
+        Throwable targetException = e.getTargetException();
+        throw new LiquiCouchException(targetException.getMessage(), e);
+      }
     }
-    dao.executeCount((ParameterizedN1qlQuery) object, bucket, entry);
   }
 
   private Object executeChangeSetMethod(Method changeSetMethod, Object changeLogInstance, Bucket bucket)
@@ -160,9 +183,6 @@ public class LiquiCouch implements InitializingBean {
   }
 
   private void validateConfig() throws LiquiCouchConfigurationException {
-//    if (!hasText(dbName)) {
-//      throw new LiquiCouchConfigurationException("DB name is not set. It should be defined in MongoDB URI or via setter");
-//    }
     if (!hasText(changeLogsScanPackage)) {
       throw new LiquiCouchConfigurationException("Scan package for changelogs is not set: use appropriate setter");
     }
@@ -190,7 +210,7 @@ public class LiquiCouch implements InitializingBean {
   /**
    * Feature which enables/disables LiquiCouch runner execution
    *
-   * @param enabled MOngobee will run only if this option is set to true
+   * @param enabled LiquiCouch will run only if this option is set to true
    * @return LiquiCouch object for fluent interface
    */
   public LiquiCouch setEnabled(boolean enabled) {
@@ -210,17 +230,15 @@ public class LiquiCouch implements InitializingBean {
   }
 
   /**
-   * Closes the Mongo instance used by LiquiCouch.
-   * This will close either the connection LiquiCouch was initiated with or that which was internally created.
-   */
-  public void close() {
-    bucket.close();
-  }
-
-  /**
    * Should only be used for testing purposes
    */
   public void setDAO(ChangeEntryDAO changeEntryDAO){
     this.dao = changeEntryDAO;
+  }
+
+
+  public static void main(String[] args) {
+    CouchbaseCluster.create("localhost")
+        .openBucket("test","couchbase");
   }
 }

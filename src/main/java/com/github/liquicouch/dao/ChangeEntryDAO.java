@@ -32,7 +32,7 @@ public class ChangeEntryDAO {
     n1qlQuery.params().consistency(ScanConsistency.REQUEST_PLUS);
     N1qlQueryResult result = bucket.query(n1qlQuery);
 
-    for (int i = 0; i < changeEntry.getRecounts(); i++) {
+    for (int i = 0; i < (changeEntry.getRecounts()+1); i++) {
       if (result.finalSuccess()) { //query executed entirely
         //tip: generally, only call allRows() once
         List<N1qlQueryRow> rows = result.allRows();
@@ -58,7 +58,6 @@ public class ChangeEntryDAO {
         throw new LiquiCouchCounterException("Could not execute the counter properly: " + result.errors());
       }
     }
-    throw new LiquiCouchCounterException("");
   }
 
   public boolean isNewChange(ChangeEntry changeEntry) {
