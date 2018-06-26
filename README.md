@@ -4,7 +4,7 @@
 ---
 
 
-**LiquiCouch** is a Java tool which helps you to *manage changes* in your MongoDB and *synchronize* them with your application.
+**LiquiCouch** is a Java tool which helps you to *manage changes* in your Couchbase and *synchronize* them with your application.
 The concept is very similar to other db migration tools such as [Liquibase](http://www.liquibase.org) or [Flyway](http://flywaydb.org) but *without using XML/JSON/YML files*.
 
 The goal is to keep this tool simple and comfortable to use.
@@ -32,14 +32,14 @@ compile 'com.github.liquicouch:liquicouch:0.13'
 
 ### Usage with Spring
 
-You need to instantiate Mongobee object and provide some configuration.
+You need to instantiate Liquicouch object and provide some configuration.
 If you use Spring can be instantiated as a singleton bean in the Spring context. 
 In this case the migration process will be executed automatically on startup.
 
 ```java
 @Bean
 public LiquiCouch liquicouch(){
-  Mongobee runner = new Mongobee("mongodb://YOUR_DB_HOST:27017/DB_NAME");
+  Liquicouch runner = new Liquicouch("mongodb://YOUR_DB_HOST:27017/DB_NAME");
   runner.setDbName("yourDbName");         // host must be set if not set in URI
   runner.setChangeLogsScanPackage(
        "com.example.yourapp.changelogs"); // the package to be scanned for changesets
@@ -53,7 +53,7 @@ public LiquiCouch liquicouch(){
 Using LiquiCouch without a spring context has similar configuration but you have to remember to run `execute()` method to start a migration process.
 
 ```java
-Mongobee runner = new Mongobee("mongodb://YOUR_DB_HOST:27017/DB_NAME");
+Liquicouch runner = new Liquicouch("mongodb://YOUR_DB_HOST:27017/DB_NAME");
 runner.setDbName("yourDbName");         // host must be set if not set in URI
 runner.setChangeLogsScanPackage(
      "com.example.yourapp.changelogs"); // package to scan for changesets
@@ -61,7 +61,7 @@ runner.setChangeLogsScanPackage(
 runner.execute();         //  ------> starts migration changesets
 ```
 
-Above examples provide minimal configuration. `Mongobee` object provides some other possibilities (setters) to make the tool more flexible:
+Above examples provide minimal configuration. `Liquicouch` object provides some other possibilities (setters) to make the tool more flexible:
 
 ```java
 runner.setChangelogCollectionName(logColName);   // default is dbchangelog, collection with applied change sets
@@ -203,8 +203,8 @@ To enable the `@Profile` integration, please inject `org.springframework.core.en
 
 ```java      
 @Bean @Autowired
-public Mongobee LiquiCouch(Environment environment) {
-  Mongobee runner = new Mongobee(uri);
+public Liquicouch LiquiCouch(Environment environment) {
+  Liquicouch runner = new Liquicouch(uri);
   runner.setSpringEnvironment(environment)
   //... etc
 }
