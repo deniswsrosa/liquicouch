@@ -19,12 +19,12 @@
         </license>
     </licenses>
 
-    <!--<scm>-->
-        <!--<connection>scm:git:git@github.com:mongobee/mongobee.git</connection>-->
-        <!--<developerConnection>scm:git:git@github.com:mongobee/mongobee.git</developerConnection>-->
-        <!--<url>git@github.com:mongobee/mongobee.git</url>-->
-        <!--<tag>mongobee-tag</tag>-->
-    <!--</scm>-->
+    <scm>
+        <connection>scm:git:git@github.com:deniswsrosa/liquicouch.git</connection>
+        <developerConnection>scm:git:git@github.com:deniswsrosa/liquicouch.git</developerConnection>
+        <url>git@github.com:deniswsrosa/liquicouch.git</url>
+        <tag>liquicouch-tag</tag>
+    </scm>
 
     <developers>
         <developer>
