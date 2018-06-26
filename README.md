@@ -121,52 +121,10 @@ Method annotated by @ChangeSet is taken and applied to the database. History of 
 Method annotated by `@ChangeSet` can have one of the following definition:
 
 ```java
-@ChangeSet(order = "001", id = "someChangeWithoutArgs", author = "testAuthor")
-public void someChange1() {
-   // method without arguments can do some non-db changes
-}
 
-@ChangeSet(order = "002", id = "someChangeWithMongoDatabase", author = "testAuthor")
-public void someChange2(MongoDatabase db) {
-  // type: com.mongodb.client.MongoDatabase : original MongoDB driver v. 3.x, operations allowed by driver are possible
-  // example: 
-  MongoCollection<Document> mycollection = db.getCollection("mycollection");
-  Document doc = new Document("testName", "example").append("test", "1");
-  mycollection.insertOne(doc);
-}
+//Examples will be added soon
 
-@ChangeSet(order = "003", id = "someChangeWithDb", author = "testAuthor")
-public void someChange3(DB db) {
-  // This is deprecated in mongo-java-driver 3.x, use MongoDatabase instead
-  // type: com.mongodb.DB : original MongoDB driver v. 2.x, operations allowed by driver are possible
-  // example: 
-  DBCollection mycollection = db.getCollection("mycollection");
-  BasicDBObject doc = new BasicDBObject().append("test", "1");
-  mycollection .insert(doc);
-}
 
-@ChangeSet(order = "004", id = "someChangeWithJongo", author = "testAuthor")
-public void someChange4(Jongo jongo) {
-  // type: org.jongo.Jongo : Jongo driver can be used, used for simpler notation
-  // example:
-  MongoCollection mycollection = jongo.getCollection("mycollection");
-  mycollection.insert("{test : 1}");
-}
-
-@ChangeSet(order = "005", id = "someChangeWithSpringDataTemplate", author = "testAuthor")
-public void someChange5(MongoTemplate mongoTemplate) {
-  // type: org.springframework.data.mongodb.core.MongoTemplate
-  // Spring Data integration allows using MongoTemplate in the ChangeSet
-  // example:
-  mongoTemplate.save(myEntity);
-}
-
-@ChangeSet(order = "006", id = "someChangeWithSpringDataTemplate", author = "testAuthor")
-public void someChange5(MongoTemplate mongoTemplate, Environment environment) {
-  // type: org.springframework.data.mongodb.core.MongoTemplate
-  // type: org.springframework.core.env.Environment
-  // Spring Data integration allows using MongoTemplate and Environment in the ChangeSet
-}
 ```
 
 ## Using Spring profiles
