@@ -21,7 +21,7 @@ The goal is to keep this tool simple and comfortable to use.
 With Maven
 ```xml
 <dependency>
-  <groupId>com.github.liquicouch</groupId>
+  <groupId>com.github.deniswsrosa</groupId>
   <artifactId>liquicouch</artifactId>
   <version>0.1</version>
 </dependency>
