@@ -14,6 +14,8 @@ The goal is to keep this tool simple and comfortable to use.
 
 # Getting started
 
+You can clone the a sample  project here https://github.com/deniswsrosa/liquicouch-demo
+
 ## Add a dependency
 
 *IMPORTANT:* I'm still waiting for maven central to publish the artifact, should be ready in less then 3 days.
