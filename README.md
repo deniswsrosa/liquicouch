@@ -14,7 +14,7 @@ The goal is to keep this tool simple and comfortable to use.
 
 # Getting started
 
-You can clone the a sample  project here https://github.com/deniswsrosa/liquicouch-demo
+You can clone the sample project here https://github.com/deniswsrosa/liquicouch-demo
 
 ## Add a dependency
 
