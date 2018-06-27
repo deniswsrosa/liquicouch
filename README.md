@@ -105,7 +105,9 @@ ChangeLogs are sorted *alphabetically* (that is why it is a good practice to sta
 
 ### @ChangeSet
 
-Method annotated by @ChangeSet is taken and applied to the database. History of applied change sets is stored in a document with type `dbChangeLog`
+Method annotated by @ChangeSet is taken and applied to the database. History of applied change sets is stored in a document with type `dbChangeLog`:
+
+![LiquiCouch](https://raw.githubusercontent.com/deniswsrosa/liquicouch/master/misc/dbChangeLogExample.png)
 
 #### Annotation parameters:
 
