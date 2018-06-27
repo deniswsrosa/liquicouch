@@ -269,16 +269,16 @@ public class ChangelogForTestEnv{
 
 ### Enabling @Profile annotation (optional)
       
-To enable the `@Profile` integration, please inject `org.springframework.core.env.Environment` to you runner.
+To enable the `@Profile` integration, please inject `org.springframework.context.ApplicationContext` to you runner.
 
 ```java
 
 @Autowired
-private Environment environment;
+private ApplicationContext context;
 
 @Bean
 public Liquicouch LiquiCouch() {
-  Liquicouch runner = new Liquicouch(environment);
+  Liquicouch runner = new Liquicouch(context);
   //... etc
 }
 ```
