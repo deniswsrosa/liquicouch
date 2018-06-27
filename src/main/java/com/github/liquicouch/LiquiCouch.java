@@ -1,25 +1,27 @@
 package com.github.liquicouch;
 
-import static org.springframework.util.StringUtils.hasText;
+import com.couchbase.client.java.Bucket;
+import com.couchbase.client.java.CouchbaseCluster;
+import com.couchbase.client.java.query.ParameterizedN1qlQuery;
+import com.github.liquicouch.changeset.ChangeEntry;
+import com.github.liquicouch.dao.ChangeEntryDAO;
+import com.github.liquicouch.exception.LiquiCouchChangeSetException;
+import com.github.liquicouch.exception.LiquiCouchConfigurationException;
+import com.github.liquicouch.exception.LiquiCouchCounterException;
+import com.github.liquicouch.exception.LiquiCouchException;
+import com.github.liquicouch.utils.ChangeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import com.couchbase.client.java.Bucket;
-import com.couchbase.client.java.CouchbaseCluster;
-import com.couchbase.client.java.query.ParameterizedN1qlQuery;
-import com.github.liquicouch.exception.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.env.Environment;
-
-import com.github.liquicouch.changeset.ChangeEntry;
-import com.github.liquicouch.dao.ChangeEntryDAO;
-import com.github.liquicouch.exception.LiquiCouchException;
-import com.github.liquicouch.utils.ChangeService;
+import static org.springframework.util.StringUtils.hasText;
 
 /**
  * LiquiCouch runner
@@ -34,15 +36,17 @@ public class LiquiCouch implements InitializingBean {
   private boolean enabled = true;
   private String changeLogsScanPackage;
   private Bucket bucket;
+  private ApplicationContext context;
   private Environment springEnvironment;
 
 
-  public LiquiCouch(Environment environment) {
-    this.springEnvironment = environment;
-    List<String> nodes = Arrays.asList(environment.getProperty("spring.couchbase.bootstrap-hosts").split(","));
+  public LiquiCouch(ApplicationContext context) {
+    this.context = context;
+    this.springEnvironment = context.getEnvironment();
+    List<String> nodes = Arrays.asList(springEnvironment.getProperty("spring.couchbase.bootstrap-hosts").split(","));
       this.bucket = CouchbaseCluster.create(nodes)
-          .openBucket(environment.getProperty("spring.couchbase.bucket.name"),
-              environment.getProperty("spring.couchbase.bucket.password"));
+          .openBucket(springEnvironment.getProperty("spring.couchbase.bucket.name"),
+              springEnvironment.getProperty("spring.couchbase.bucket.password"));
       this.dao = new ChangeEntryDAO(bucket);
   }
 
@@ -104,6 +108,11 @@ public class LiquiCouch implements InitializingBean {
       Object changelogInstance = null;
       try {
         changelogInstance = changelogClass.getConstructor().newInstance();
+
+        if (context != null) {
+          context.getAutowireCapableBeanFactory().autowireBean(changelogInstance);
+        }
+
         List<Method> changesetMethods = service.fetchChangeSets(changelogInstance.getClass());
 
         for (Method changesetMethod : changesetMethods) {
@@ -152,8 +161,10 @@ public class LiquiCouch implements InitializingBean {
 
       } catch(LiquiCouchCounterException e) {
         //if is the last retry throw the exception
-        if( (entry.getRecounts()+1) == i) {
-          throw e;
+        if (i == entry.getRetries()) {
+          throw new LiquiCouchException("All retries have failed for changeSet " + entry.getChangeId(), e);
+        } else {
+          logger.warn("All recounts have failed, retrying to execute changeSet " + entry.getChangeId());
         }
 
       } catch (IllegalAccessException e) {

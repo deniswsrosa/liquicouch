@@ -101,7 +101,7 @@ ChangeLogs are sorted *alphabetically* (that is why it is a good practice to sta
 
 ### @ChangeSet
 
-Method annotated by @ChangeSet is taken and applied to the database. History of applied change sets is stored in a document with type `dbchangelog`
+Method annotated by @ChangeSet is taken and applied to the database. History of applied change sets is stored in a document with type `dbChangeLog`
 
 #### Annotation parameters:
 
@@ -111,19 +111,134 @@ Method annotated by @ChangeSet is taken and applied to the database. History of 
 
 `author` - author of a change set
 
-`runAlways` - _[optional, default: false]_ changeset will always be executed but only first execution event will be stored in dbchangelog collection
+`runAlways` - _[optional, default: false]_ changeset will always be executed but only first execution event will be stored as a document
 
-`recounts` - _[optional, default: 0] [Only applied when changSet returns a ParameterizedN1qlQuery]_ if you want to be sure that all documents have been update XXXXXX
+`recounts` - _[optional, default: 0] [Only applied when changSet returns a ParameterizedN1qlQuery]_ if you want to be sure that all documents have been update, you can return a ParameterizedN1qlQuery. This query expects a result called *size*. If size is not zero, the query will be executed again according to the number of recounts specified. If none of the recounts returns zero, an exception will be thrown, and the application will fail to start.
 
 `retries` - _[optional, default: 0] [Only applied when changSet returns a ParameterizedN1qlQuery]_ if the recount operation fails (the count result isn't zero) it will rerun the changeSet in an attempt to update the remaining documents ( Your changeSet should me able to run multiple times without any side effects). If all retries fail, an exception will the thrown an the application will fail to start.
 
 #### Defining ChangeSet methods
 Method annotated by `@ChangeSet` can have one of the following definition:
 
+
+##### With Spring
+
 ```java
 
-//Examples will be added soon
+/**
+ * If you are using Spring, you can Autowire your Services or Repositories
+ */
+@Component
+@ChangeLog(order = "001")
+public class Migration1 {
 
+    @Autowired // Yes, You can a
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @ChangeSet(order = "001", id = "someChangeId1", author = "testAuthor")
+    public void importantWorkToDo(Bucket bucket){
+        System.out.println("----------Migration1 - Method1");
+    }
+
+    @ChangeSet(order = "002", id = "someChangeId2", author = "testAuthor")
+    public void method2(Bucket bucket){
+        System.out.println("----------Migration1 - Method2");
+    }
+
+    @ChangeSet(order = "003", id = "someChangeId3", author = "testAuthor")
+    public void method3(Bucket bucket){
+        System.out.println("----------Migration1 - Method3");
+    }
+
+    @ChangeSet(order = "004", id = "someChangeId4", author = "testAuthor")
+    public void method4(Bucket bucket){
+        System.out.println("----------Migration1 - Method4");
+    }
+
+    @ChangeSet(order = "005", id = "someChangeId5", author = "testAuthor")
+    public void method5(){
+        System.out.println("----------Migration1 - Method5 (The bucket parameter is not necessary here)");
+    }
+
+
+    /**
+     * Here is an example of how you can check if your update has run successfully, all you need to do is to
+     * return a ParameterizedN1qlQuery.
+     * @return
+     */
+    @ChangeSet(order = "006", id = "someChangeId6", author = "testAuthor", recounts = "2", retries = "1")
+    public ParameterizedN1qlQuery method6(){
+
+        //adding some data as an example
+        userService.save(new User("someUserIdForTesting", "user1", new Address(), new ArrayList<>(), Arrays.asList("admin", "manager")));
+        Iterable<User> users = userRepository.findAll(new PageRequest(0, 100));//we just care about the first 100 records
+
+        users.forEach( e-> {
+            //rename admin to adm
+             if(e.getSecurityRoles().contains("admin")) {
+                 e.getSecurityRoles().remove("admin");
+                 e.getSecurityRoles().add("adm");
+             }
+            userRepository.save(e);
+        });
+
+        //IMPORTANT: The query MUST have an attribute called *size*
+        String queryString = "Select count(userRole)  as size from test t unnest t.securityRoles as userRole " +
+                " where t._class='com.cb.springdata.sample.entities.User' " +
+                " and userRole = 'admin'";
+        N1qlParams params = N1qlParams.build().consistency(ScanConsistency.REQUEST_PLUS).adhoc(true);
+        ParameterizedN1qlQuery query = N1qlQuery.parameterized(queryString, JsonObject.create(), params);
+        return query;
+    }
+
+}
+
+
+```
+
+
+##### Without Spring
+
+```java
+/**
+ * This is an example of how to use it without Spring, in this case you can execute all the queries via the Bucket argument.
+ */
+@ChangeLog(order = "2")
+public class Migration2 {
+
+    @ChangeSet(order = "1", id = "someChangeId21", author = "testAuthor")
+    public void importantWorkToDo(){
+        System.out.println("----------Migration2 - Method1");
+    }
+
+    @ChangeSet(order = "2", id = "someChangeId22", author = "testAuthor")
+    public void method2(){
+        System.out.println("----------Migration2 - Method2");
+    }
+
+    @ChangeSet(order = "3", id = "someChangeId23", author = "testAuthor")
+    public void method3(){
+        System.out.println("----------Migration2 - Method3");
+    }
+
+    @ChangeSet(order = "4", id = "someChangeId24", author = "testAuthor")
+    public void method4(){
+        System.out.println("----------Migration2 - Method4");
+    }
+
+    @ChangeSet(order = "5", id = "someChangeId25", author = "testAuthor")
+    public void method5(Bucket bucket){
+        System.out.println("----------Migration2 - Method5");
+    }
+
+    @ChangeSet(order = "6", id = "someChangeId256", author = "testAuthor", runAlways=true)
+    public void method6(Bucket bucket){
+        System.out.println("----------Migration2 - Method6 - THIS SHOULD ALWAYS RUN "+bucket.name());
+    }
+}
 
 ```
 
