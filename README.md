@@ -287,7 +287,7 @@ public Liquicouch LiquiCouch() {
 
 ## Support
 
-If you have any questions/requests, just ping me on twitter at @deniswsrosa
+If you have any questions/requests, just ping me on twitter at [@deniswsrosa](https://twitter.com/deniswsrosa)
 
 ## Special Thanks
 
