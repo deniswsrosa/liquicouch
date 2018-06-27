@@ -4,7 +4,7 @@
 ---
 
 
-**LiquiCouch** is a Java tool which helps you to *manage changes* in your Couchbase and *synchronize* them with your application.
+**LiquiCouch** is a Java framework which helps you to *manage changes* in your Couchbase and *synchronize* them with your application.
 The concept is very similar to other db migration tools such as [Liquibase](http://www.liquibase.org) or [Flyway](http://flywaydb.org) but *without using XML/JSON/YML files*.
 
 The goal is to keep this tool simple and comfortable to use.
