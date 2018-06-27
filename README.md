@@ -16,6 +16,8 @@ The goal is to keep this tool simple and comfortable to use.
 
 ## Add a dependency
 
+*IMPORTANT:* I'm still waiting for maven central to publish the artifact, should be ready in less then 3 days.
+
 With Maven
 ```xml
 <dependency>
@@ -283,6 +285,9 @@ public Liquicouch LiquiCouch() {
 }
 ```
 
+## Support
+
+If you have any questions/requests, just ping me on twitter at @deniswsrosa
 
 ## Special Thanks
 
