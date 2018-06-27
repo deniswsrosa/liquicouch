@@ -41,11 +41,11 @@ In this case the migration process will be executed automatically on startup.
 ```java
 
 @Autowired
-private Environment environment;
+private ApplicationContext context;
 
 @Bean
 public LiquiCouch liquicouch(){
-  LiquiCouch runner = new LiquiCouch(environment); //It will grab all the data needed from the application.properties file
+  LiquiCouch runner = new LiquiCouch(context); //It will grab all the data needed from the application.properties file
   runner.setChangeLogsScanPackage(
        "com.example.yourapp.changelogs"); // the package to be scanned for changesets
   
