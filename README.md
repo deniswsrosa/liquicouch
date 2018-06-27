@@ -123,6 +123,9 @@ Method annotated by @ChangeSet is taken and applied to the database. History of 
 
 `retries` - _[optional, default: 0] [Only applied when changSet returns a ParameterizedN1qlQuery]_ if the recount operation fails (the count result isn't zero) it will rerun the changeSet in an attempt to update the remaining documents ( Your changeSet should me able to run multiple times without any side effects). If all retries fail, an exception will the thrown an the application will fail to start.
 
+![LiquiCouch](https://raw.githubusercontent.com/deniswsrosa/liquicouch/master/misc/retriesExample.png)
+
+
 #### Defining ChangeSet methods
 Method annotated by `@ChangeSet` can have one of the following definition:
 
