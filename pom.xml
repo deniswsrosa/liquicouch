@@ -15,7 +15,7 @@
 
   <groupId>com.github.deniswsrosa</groupId>
   <artifactId>liquicouch</artifactId>
-  <version>0.6.2-SNAPSHOT</version>
+  <version>0.6.2</version>
 
   <licenses>
     <license>
