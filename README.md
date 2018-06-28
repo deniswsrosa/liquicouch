@@ -18,14 +18,14 @@ You can clone the sample project here https://github.com/deniswsrosa/liquicouch-
 
 ## Add a dependency
 
-*IMPORTANT:* I'm still waiting for maven central to publish the artifact, should be ready in less then 3 days.
+*IMPORTANT:* https://oss.sonatype.org/content/groups/public/com/github/deniswsrosa/liquicouch/.
 
 With Maven
 ```xml
 <dependency>
   <groupId>com.github.deniswsrosa</groupId>
   <artifactId>liquicouch</artifactId>
-  <version>0.1</version>
+  <version>0.6.4</version>
 </dependency>
 ```
 With Gradle
