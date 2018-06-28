@@ -15,7 +15,7 @@
 
   <groupId>com.github.deniswsrosa</groupId>
   <artifactId>liquicouch</artifactId>
-  <version>0.6.2</version>
+  <version>0.6.3-SNAPSHOT</version>
 
   <licenses>
     <license>
@@ -29,7 +29,7 @@
     <connection>scm:git:git@github.com:deniswsrosa/liquicouch.git</connection>
     <developerConnection>scm:git:git@github.com:deniswsrosa/liquicouch.git</developerConnection>
     <url>git@github.com:deniswsrosa/liquicouch.git</url>
-    <tag>liquicouch-0.6.2</tag>
+    <tag>liquicouch-tag</tag>
   </scm>
 
   <developers>
