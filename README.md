@@ -31,7 +31,7 @@ With Maven
 With Gradle
 ```groovy
 compile 'org.javassist:javassist:3.18.2-GA' // workaround for ${javassist.version} placeholder issue*
-compile 'com.github.liquicouch:liquicouch:0.13'
+compile 'com.github.liquicouch:liquicouch:0.6.4'
 ```
 
 ## Usage with Spring
