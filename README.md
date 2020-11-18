@@ -3,4 +3,4 @@
 ---
 
 >[!WARNING]
->Due to Trademark issues, Liquicouch will be renamed and moved to a new repository soon. If you have any questions, feel free to DM me at @deniswsrosa
+>Due to Trademark issues, Liquicouch was renamed to "CouchVersion" and moved to https://github.com/couchbaselabs/CouchVersion. If you have any questions, feel free to DM me at @deniswsrosa or denis.rosa at couchbase.com
